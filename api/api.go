@@ -7,7 +7,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetInfoPlayer_API() {
+func GetInfoPlayer_API() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var request struct {
+			PlayerID int `json:"player_id" binding:"required"`
+		}
+		if err := c.ShouldBindJSON(&request); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		pl, err := db.GetPOnePlayer(request.PlayerID)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		c.JSON(http.StatusOK, gin.H{"message": "Player Information retrieved successfully", "Information": pl})
+
+	}
 
 }
 

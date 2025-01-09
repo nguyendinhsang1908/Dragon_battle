@@ -29,6 +29,10 @@ func InitDB(cfg config.DBConfig) {
 	log.Println("Connected to MySQL database!")
 }
 
+func Message(pl_id1 int, pl_id2 int) error {
+	query := `INSERT INTO `
+}
+
 func Cre_Player(player models.Player) error {
 	// Câu lệnh SQL để chèn dữ liệu vào bảng Information và Achievement
 	queryInfo := `INSERT INTO Information (ID, Name, Balance, Level, Avatar) VALUES (?, ?, ?, ?, ?)`
@@ -61,7 +65,7 @@ func GetPOnePlayer(playerID int) (models.Player, error) {
 
 	var player models.Player
 	err := row.Scan(
-		&player.Information.ID, &player.Name, &player.Balance, &player.Level, &player.Avatar,
+		&player.ID, &player.Name, &player.Balance, &player.Level, &player.Avatar,
 		&player.Win, &player.Lose, &player.Num_Dragon, &player.Num_token,
 	)
 	if err != nil {

@@ -16,6 +16,7 @@ func main() {
 
 	log.Println("Connect_database successfull!")
 	r := gin.Default()
+	r.GET("/get_Profile", api.GetInfoPlayer_API())
 	r.POST("/add_friend", api.AddFriend_API())
 	r.GET("/get_friend", api.GetFriend_API())
 	r.DELETE("/delete_friend", api.DeleteFriendAPI())
