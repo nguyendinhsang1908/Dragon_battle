@@ -26,6 +26,21 @@ func GetInfoPlayer_API() func(c *gin.Context) {
 
 }
 
+func Message_API() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		var request struct {
+			ID1  int `json:"player_id_from" binding:"required"`
+			ID2  int `json:"player_id_to" binding:"required"`
+			Text int `json:"messanges" binding:"required"`
+		}
+		// Kiểm tra dữ liệu đầu vào
+		if err := c.ShouldBindJSON(&request); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+}
+
 func AddFriend_API() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		// Nhận dữ liệu JSON từ yêu cầu

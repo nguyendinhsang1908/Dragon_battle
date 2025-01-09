@@ -6,6 +6,7 @@ import (
 	"dragon_battle/models"
 	"fmt"
 	"log"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -29,8 +30,11 @@ func InitDB(cfg config.DBConfig) {
 	log.Println("Connected to MySQL database!")
 }
 
-func Message(pl_id1 int, pl_id2 int) error {
-	query := `INSERT INTO `
+func Message(from_id int, to_id int, text string) error {
+	query := `INSERT INTO Messanges (ID_Player1,ID_Player2,Messanges) VALUES(?,?,?) `
+	text = strconv.Itoa(from_id) + text
+	_, err := DB.Exec(query, from_id, to_id, text)
+	return err
 }
 
 func Cre_Player(player models.Player) error {
