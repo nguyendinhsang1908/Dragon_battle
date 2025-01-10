@@ -6,7 +6,7 @@ import (
 
 func Crea_new_data() models.Player {
 	info := models.Information{
-		ID:      2,
+		ID:      4,
 		Name:    "sang",
 		Balance: 500,
 		Level:   1,
