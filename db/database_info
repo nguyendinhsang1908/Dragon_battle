@@ -46,7 +46,7 @@ CREATE TABLE Messages (
 
 CREATE TABLE Items (
     ItemID INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL,
+    Name VARCHAR(255)  NOT NULL UNIQUE,
     IsStackable BOOLEAN DEFAULT FALSE, -- Vật phẩm có thể xếp chồng không
     MaxStack INT DEFAULT 1             -- Số lượng tối đa có thể xếp chồng
 );
@@ -72,3 +72,34 @@ CREATE TABLE Dragons (
     Rarity VARCHAR(50),
     Element VARCHAR(50)
 );
+
+---STRIGGER----
+
+-- Check Insert,Update item
+-- if IsStackable = false => Maxstack = 1 
+DELIMITER $$
+
+CREATE TRIGGER before_item_insert
+BEFORE INSERT ON Items
+FOR EACH ROW
+BEGIN
+    IF NEW.IsStackable = FALSE AND NEW.MaxStack != 1 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nếu IsStackable là false, MaxStack phải bằng 1';
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER before_item_update
+BEFORE UPDATE ON Items
+FOR EACH ROW
+BEGIN
+    IF NEW.IsStackable = FALSE AND NEW.MaxStack != 1 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nếu IsStackable là false, MaxStack phải bằng 1';
+    END IF;
+END $$
+
+DELIMITER ;

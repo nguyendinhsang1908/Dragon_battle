@@ -72,10 +72,10 @@ type Dragon struct {
 }
 
 type Item struct {
-	ItemID      int
-	Name        string
-	IsStackable bool
-	MaxStack    int
+	//ItemID      int
+	Name        string `json:"name_item" binding:"required"`
+	IsStackable *bool  `json:"IsStackable" binding:"required"`
+	MaxStack    int    `json:"MaxStack" binding:"required,gt=0"`
 }
 
 type Inventory struct {

@@ -35,6 +35,10 @@ func Api() {
 	r.DELETE("/Delete_dragon", game.Delete_Dragon())
 	r.GET("/GetAllDragon", game.GetAllDragon())
 
+	//Add,Delete Items
+	r.POST("/add_item", game.Add_Item())
+	r.DELETE("/delete_item", game.Delete_Item())
+	r.GET("/get_item", game.GetItem())
 	// Chạy server
 	if err := r.Run("localhost:8080"); err != nil {
 		log.Fatalf("Failed to run server: %v", err)
