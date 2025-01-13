@@ -54,7 +54,7 @@ CREATE TABLE Items (
 CREATE TABLE Inventory (
     InventoryID INT AUTO_INCREMENT PRIMARY KEY,
     PlayerID INT NOT NULL,             -- Người chơi sở hữu inventory
-    ItemID INT NOT NULL,               -- ID vật phẩm
+    ItemID INT ,               -- ID vật phẩm
     Quantity INT NOT NULL DEFAULT 1,   -- Số lượng
     FOREIGN KEY (ItemID) REFERENCES Items(ItemID),
     UNIQUE (PlayerID, ItemID)          -- Đảm bảo mỗi vật phẩm chỉ xuất hiện 1 lần cho mỗi người chơi
