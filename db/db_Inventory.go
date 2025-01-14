@@ -66,13 +66,13 @@ func Db_Delete_item_inventory(inve_id int) error {
 // Update number items in inventory
 func Db_Update_item_inventory(inve_id int, item_id int, quantity int) error {
 	query := `
-	UPDATE (ItemID,Quantity) VALUES (?,?) 
-	FROM Inventory 
-	WHERE InventoryID = ?
+	UPDATE Inventory
+	SET ItemID = ?, Quantity = ?
+	WHERE InventoryID = ?;
 	`
 
 	// Thực hiện câu truy vấn
-	_, err := DB.Exec(query, inve_id, item_id, quantity)
+	_, err := DB.Exec(query, item_id, quantity, inve_id)
 	if err != nil {
 		return fmt.Errorf("failed to update quantity item: %v", err)
 	}

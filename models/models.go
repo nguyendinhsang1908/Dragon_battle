@@ -58,15 +58,19 @@ type MessageRequest struct {
 	CreatedAt  time.Time `json:"created_at"`
 }
 
-type Dragon struct {
-	ID      int
-	Name    string
-	Point   int
+type Stat struct {
 	Hp      int
 	Mp      int
 	Dame    int
 	Defense int
 	Speed   int
+}
+
+type Dragon struct {
+	ID    int
+	Name  string
+	Point int
+	Stat
 	Rarity  string // Common,epic,legendary,immo
 	Element string // Fire,Natural,Terra,Ice,Metal,Dark,Light,Chaos
 }
@@ -74,6 +78,7 @@ type Dragon struct {
 type Item struct {
 	//ItemID      int
 	Name        string `json:"name_item" binding:"required"`
+	Type        string `json:"type" binding:"required"` //
 	IsStackable *bool  `json:"IsStackable" binding:"required"`
 	MaxStack    int    `json:"MaxStack" binding:"required,gt=0"`
 }
@@ -83,4 +88,37 @@ type Inventory struct {
 	PlayerID    int
 	ItemID      int
 	Quantity    int
+}
+
+type Egg struct {
+	Egg_id    int
+	Name      string `json:"name_egg" bingding:"required"`
+	Rate      string `json:"rate" bingding:"required"`
+	CreatedAt time.Time
+}
+
+// Event model: Logs in-game events and rewards
+type Event struct {
+	EventID       int       `json:"event_id" db:"event_id"`
+	EventName     string    `json:"event_name" db:"event_name"`
+	EventType     string    `json:"event_type" db:"event_type"`
+	StartTime     time.Time `json:"start_time" db:"start_time"`
+	EndTime       time.Time `json:"end_time" db:"end_time"`
+	RewardDetails string    `json:"reward_details" db:"reward_details"` // JSON stored as string
+}
+
+// Ranking model: Stores leaderboard data
+type Ranking struct {
+	RankingID int       `json:"ranking_id" db:"ranking_id"`
+	PlayerID  int       `json:"player_id" db:"player_id"`
+	RankType  string    `json:"rank_type" db:"rank_type"` // 'global', 'clan', etc.
+	Score     int64     `json:"score" db:"score"`
+	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+}
+type ClanMember struct {
+	MembershipID int       `json:"membership_id" db:"membership_id"`
+	ClanID       int       `json:"clan_id" db:"clan_id"`
+	PlayerID     int       `json:"player_id" db:"player_id"`
+	Role         string    `json:"role" db:"role"` // 'member', 'admin', 'leader'
+	JoinedAt     time.Time `json:"joined_at" db:"joined_at"`
 }

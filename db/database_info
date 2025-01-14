@@ -20,8 +20,16 @@ CREATE TABLE Users (
 
 CREATE TABLE Clans (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
+    Name VARCHAR(100) NOT NULL UNIQUE,
     Own VARCHAR(25) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE EGG (
+    EGG_id INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL UNIQUE,
+    rate ENUM('Common','Epic','Legendary','Immo')
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -33,16 +41,6 @@ CREATE TABLE Teams (
 );
 
 
-CREATE TABLE Messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    sender_id INT NOT NULL,                -- ID người gửi
-    receiver_id INT DEFAULT NULL,          -- ID người nhận (Friend chat)
-    clan_id INT DEFAULT NULL,              -- ID clan (Clan chat)
-    team_id INT DEFAULT NULL,              -- ID team (Team chat)
-    message_type ENUM('world', 'clan', 'friend', 'team') NOT NULL, -- Loại chat
-    message TEXT NOT NULL,                 -- Nội dung tin nhắn
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Thời gian gửi
-);
 
 CREATE TABLE Items (
     ItemID INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,6 +56,15 @@ CREATE TABLE Inventory (
     Quantity INT NOT NULL DEFAULT 1,   -- Số lượng
     FOREIGN KEY (ItemID) REFERENCES Items(ItemID),
     UNIQUE (PlayerID, ItemID)          -- Đảm bảo mỗi vật phẩm chỉ xuất hiện 1 lần cho mỗi người chơi
+);
+
+CREATE TABLE Store (
+    Store_ID INT AUTO_INCREMENT PRIMARY KEY,
+    ItemID INT ,               -- ID vật phẩm
+    Quantity INT NOT NULL DEFAULT 1,   -- Số lượng
+    Money INT NOT NULL,
+    FOREIGN KEY (ItemID) REFERENCES Items(ItemID),
+    UNIQUE (ItemID)          -- Đảm bảo mỗi vật phẩm chỉ xuất hiện 1 lần cho mỗi người chơi
 );
 
 CREATE TABLE Dragons (
@@ -90,7 +97,7 @@ END $$
 
 DELIMITER ;
 
-
+---
 DELIMITER $$
 
 CREATE TRIGGER before_item_update
@@ -103,3 +110,56 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+---
+DELIMITER $$
+
+CREATE TRIGGER before_insert_or_update_items
+BEFORE INSERT ON Items
+FOR EACH ROW
+BEGIN
+    IF NEW.TYPE IN ('Consumable', 'EGG') THEN
+        SET NEW.IsStackable = TRUE;
+        -- MaxStack giữ nguyên giá trị người dùng truyền vào nếu hợp lệ
+        IF NEW.MaxStack IS NULL OR NEW.MaxStack <= 0 THEN
+            SET NEW.MaxStack = 1; -- Giá trị mặc định nếu MaxStack không hợp lệ
+        END IF;
+    ELSE
+        SET NEW.IsStackable = FALSE;
+        -- MaxStack có thể bằng bất kỳ giá trị nào, không giới hạn
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+
+
+
+-- Clan members table: Stores members of each clan
+CREATE TABLE clan_members (
+    membership_id SERIAL PRIMARY KEY,
+    clan_id INT REFERENCES clans(clan_id) ON DELETE CASCADE,
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+    role VARCHAR(20) DEFAULT 'member', -- 'member', 'admin', 'leader'
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Events table: Logs in-game events and rewards
+CREATE TABLE events (
+    event_id SERIAL PRIMARY KEY,
+    event_name VARCHAR(100),
+    event_type VARCHAR(50),
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
+    reward_details JSONB
+);
+
+-- Rankings table: Stores leaderboard data
+CREATE TABLE rankings (
+    ranking_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+    rank_type VARCHAR(20), -- 'global', 'clan', etc.
+    score BIGINT DEFAULT 0,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

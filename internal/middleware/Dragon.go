@@ -65,10 +65,10 @@ func Delete_Dragon() func(g *gin.Context) {
 
 func GetAllDragon() func(g *gin.Context) {
 	return func(g *gin.Context) {
-		// Gọi hàm DeleteFriend để xóa bạn bè
+		// Gọi hàm
 		dragons, err := db.GetAllDragon()
 		if err != nil {
-			g.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to Get Add Dragon", "details": err.Error()})
+			g.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to Get All Dragon", "details": err.Error()})
 			return
 		}
 

@@ -45,7 +45,16 @@ func Api() {
 	r.POST("/create_Inventory", middleware.Add_Inventory())
 	r.DELETE("/delete_it_inventory", middleware.Delete_item_inventory())
 	r.GET("/GetAllItemsInventory", middleware.GetAllItems_inven())
+	r.PATCH("/UpdateItems_Inventory", middleware.UpdateItems_inven())
+
+	//Egg
+	r.POST("/add_egg", middleware.Add_egg())
+	r.DELETE("/delete_egg_byID", middleware.Delete_eggid())
+	r.DELETE("/delete_egg_by_name", middleware.Delete_eggName())
+	r.GET("/GetAllEggs", middleware.GetAllEgg())
+
 	// Chạy server
+
 	if err := r.Run("localhost:8080"); err != nil {
 		log.Fatalf("Failed to run server: %v", err)
 	}
